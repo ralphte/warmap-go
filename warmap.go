@@ -49,6 +49,7 @@ const tpl = `
           <p>Displaying {{.PathLength}} points.</p>
 					<p><button onclick="toggleHeatmap()">Toggle Heatmap</button><p>
 					<p><button onclick="toggleOverlay()">Toggle Overlay</button><p>
+					<p><button onclick="toggleDrive()">Toggle Drive</button><p>
         </div>
       </div>
       <div class="row">
@@ -67,6 +68,7 @@ const tpl = `
 <script>
 var heatMapData = {{.Heatmap}};
 var overlayCoords = {{.Paths}};
+var overlayDrive = {{.Drive}};
 
 var map = new google.maps.Map(document.getElementById('map'), {
   zoom: 17,
@@ -87,11 +89,23 @@ var polygon =  new google.maps.Polygon({
           fillOpacity: 0.35
         });
 
+var drive =  new google.maps.Polygon({
+          paths: overlayDrive,
+          strokeColor: '#3366FF',
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+          fillOpacity: 0.0
+        });
+
 function toggleHeatmap() {
         heatmap.setMap(heatmap.getMap() ? null : map);
 }
 function toggleOverlay() {
 	polygon.setMap(polygon.getMap() ? null : map)
+}
+
+function toggleDrive() {
+	drive.setMap(drive.getMap() ? null : map)
 }
 </script>
 </html>
@@ -116,6 +130,7 @@ type Page struct {
 	Lng        float64
 	Heatmap    template.JS
 	Paths      template.JS
+	Drive      template.JS
 	PathLength int
 }
 
@@ -295,13 +310,17 @@ func parseBssid(bssids string) (tempBssidSlice []string) {
 //into the html template
 
 //populateTemplate populates the html template
-func populateTemplate(points Points, allPoints Points) []byte {
+func populateTemplate(points Points, allPoints Points, gpsPoints []GPSPoint) []byte {
 	var page Page
 	var heatmap string
-	var tplBuffer bytes.Buffer
 	var pathsData string
+	var driveData string
+	var tplBuffer bytes.Buffer
 	for i := 0; i < len(points); i++ {
 		pathsData += fmt.Sprintf("(new google.maps.LatLng(%g, %g)), ", points[i].Y, points[i].X)
+	}
+	for i := 0; i < len(gpsPoints); i++ {
+		driveData += fmt.Sprintf("(new google.maps.LatLng(%g, %g)), ", gpsPoints[i].Lat, gpsPoints[i].Lon)
 	}
 	for n := 0; n < len(allPoints); n++ {
 		heatmap += fmt.Sprintf("{location: new google.maps.LatLng(%g, %g), weight: %f}, ", allPoints[n].Y, allPoints[n].X, (float64(allPoints[n].Dbm)/10.0)+9.0)
@@ -311,6 +330,7 @@ func populateTemplate(points Points, allPoints Points) []byte {
 	page.PathLength = len(pathsData)
 	page.Paths = template.JS("[" + pathsData[:len(pathsData)-2] + "]")
 	page.Heatmap = template.JS("[" + heatmap[:len(heatmap)-2] + "]")
+	page.Drive = template.JS("[" + driveData[:len(driveData)-2] + "]")
 	t, err := template.New("webpage").Parse(tpl)
 	checkError(err)
 	err = t.Execute(&tplBuffer, page)
@@ -332,6 +352,6 @@ func main() {
 	bssidData := parseBssid(*bssid)
 	filteredPoints := filterBSSID(xmlTree.GPSPoints, bssidData)
 	parsedCoords := processCoords(filteredPoints)
-	templateBuffer := populateTemplate(findConvexHull(parsedCoords), parsedCoords)
+	templateBuffer := populateTemplate(findConvexHull(parsedCoords), parsedCoords, xmlTree.GPSPoints)
 	ioutil.WriteFile(*outFile, templateBuffer, 0644)
 }
