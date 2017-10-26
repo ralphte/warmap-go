@@ -277,15 +277,15 @@ func findConvexHull(points Points) Points {
 
 //parseBssid takes a filename or comma seperated list of BSSIDs
 //and outputs an array containing the parsed BSSIDs
-func parseBssid(bssids string) (tempBssidSlice []string) {
-	var bssidSlice []string
+func parseBssid(bssids string) []string {
+	var (
+		bssidSlice     []string
+		tempBssidSlice []string
+	)
 	r, err := regexp.Compile("(([a-zA-Z0-9]{2}:)){5}[a-zA-Z0-9]{2}")
 	checkError(err)
-	if _, err := os.Stat(bssids); os.IsNotExist(err) {
-		bssidSlice = strings.Split(bssids, ",")
-	} else {
-		file, err := os.Open(bssids)
-		checkError(err)
+	file, err := os.Open(bssids)
+	if err == nil {
 		defer file.Close()
 		var lines []string
 		scanner := bufio.NewScanner(file)
@@ -294,6 +294,8 @@ func parseBssid(bssids string) (tempBssidSlice []string) {
 			lines = append(lines, scanner.Text())
 		}
 		bssidSlice = lines
+	} else {
+		bssidSlice = strings.Split(bssids, ",")
 	}
 	for i := 0; i < len(bssidSlice); i++ {
 		if r.MatchString(bssidSlice[i]) {
@@ -303,7 +305,7 @@ func parseBssid(bssids string) (tempBssidSlice []string) {
 	if len(tempBssidSlice) == 0 {
 		log.Fatal("Looks like you didn't have any correctly formatted SSIDs")
 	}
-	return
+	return tempBssidSlice
 }
 
 //genHeatmap generates a string to insert a list of heatmap objects
