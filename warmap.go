@@ -39,18 +39,18 @@ const tpl = `
         <div class="col-xs-12">
           <p>Displaying {{.PathLength}} points.</p>
 					<p><button onclick="toggleHeatmap()">Toggle Heatmap</button><p>
-					<p><button onclick="toggleOverlay()">Toggle Overlay</button><p>
-					<p><button onclick="toggleDrive()">Toggle Drive</button><p>
+					<p><button onclick="toggleOverlay()">Toggle Overlay</button><button onclick="overlayEditable()">Toggle Editable</button><p>
+					<p><button onclick="toggleDrive()">Toggle Drive</button><button onclick="driveEditable()">Toggle Editable</button><p>
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-11">
+				<div class="col-xs-11">
           <div id="map"></div>
         </div>
       </div>
     </div>
   </body>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAruUeKxiz_cGDM5OPGWX6DlAhHCe1xRas&libraries=visualization">  
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization">  
   </script>
 <script>
 var heatMapData = {{.Heatmap}};
@@ -68,7 +68,8 @@ var heatmap = new google.maps.visualization.HeatmapLayer({
 });
 
 var convexHull =  new google.maps.Polygon({
-          paths: overlayCoords,
+					paths: overlayCoords,
+					editable: false,
           strokeColor: '#3366FF',
           strokeOpacity: 0.8,
           strokeWeight: 2,
@@ -77,7 +78,8 @@ var convexHull =  new google.maps.Polygon({
         });
 
 var drive =  new google.maps.Polyline({
-	    path: overlayDrive,
+		path: overlayDrive,
+		editable: false,
 		geodesic: true,
 		strokeColor: '#3366FF',
 		strokeOpacity: 1.0,
@@ -91,6 +93,22 @@ function toggleOverlay() {
 }
 function toggleDrive() {
 	drive.setMap(drive.getMap() ? null : map)
+}
+function driveEditable() {
+	if (drive.editable) {
+		drive.setEditable(false);
+	}
+	else {
+		drive.setEditable(true);
+	}
+}
+function overlayEditable() {
+	if (convexHull.editable) {
+		convexHull.setEditable(false);
+	}
+	else {
+		convexHull.setEditable(true);
+	}
 }
 </script>
 </html>
