@@ -50,7 +50,7 @@ const tpl = `
       </div>
     </div>
   </body>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=visualization">  
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{.Apikey}}&libraries=visualization">  
   </script>
 <script>
 var heatMapData = {{.Heatmap}};
@@ -136,6 +136,7 @@ type Page struct {
 	ConvexHull template.JS
 	Drive      template.JS
 	PathLength int
+	Apikey     *string
 }
 
 //GPSXMLPoint defines a struct to hold the values
@@ -175,6 +176,254 @@ type GPSAeroPoint struct {
 	Epc    float64
 }
 
+type KismetDatabase struct {
+	Dot11_device struct {
+		Dot11_device_advertisedSsidMap struct {
+			Five3936447 struct {
+				Dot11_advertisedssid_beacon                       int           `json:"dot11.advertisedssid.beacon"`
+				Dot11_advertisedssid_beaconInfo                   string        `json:"dot11.advertisedssid.beacon_info"`
+				Dot11_advertisedssid_beaconrate                   int           `json:"dot11.advertisedssid.beaconrate"`
+				Dot11_advertisedssid_beaconsSec                   int           `json:"dot11.advertisedssid.beacons_sec"`
+				Dot11_advertisedssid_channel                      string        `json:"dot11.advertisedssid.channel"`
+				Dot11_advertisedssid_cloaked                      int           `json:"dot11.advertisedssid.cloaked"`
+				Dot11_advertisedssid_cryptSet                     int           `json:"dot11.advertisedssid.crypt_set"`
+				Dot11_advertisedssid_dot11dCountry                string        `json:"dot11.advertisedssid.dot11d_country"`
+				Dot11_advertisedssid_dot11dList                   []interface{} `json:"dot11.advertisedssid.dot11d_list"`
+				Dot11_advertisedssid_dot11eChannelUtilizationPerc float64       `json:"dot11.advertisedssid.dot11e_channel_utilization_perc"`
+				Dot11_advertisedssid_dot11eQbss                   int           `json:"dot11.advertisedssid.dot11e_qbss"`
+				Dot11_advertisedssid_dot11eQbssStations           int           `json:"dot11.advertisedssid.dot11e_qbss_stations"`
+				Dot11_advertisedssid_dot11rMobility               int           `json:"dot11.advertisedssid.dot11r_mobility"`
+				Dot11_advertisedssid_dot11rMobilityDomainID       int           `json:"dot11.advertisedssid.dot11r_mobility_domain_id"`
+				Dot11_advertisedssid_firstTime                    int           `json:"dot11.advertisedssid.first_time"`
+				Dot11_advertisedssid_htCenter1                    int           `json:"dot11.advertisedssid.ht_center_1"`
+				Dot11_advertisedssid_htCenter2                    int           `json:"dot11.advertisedssid.ht_center_2"`
+				Dot11_advertisedssid_htMode                       string        `json:"dot11.advertisedssid.ht_mode"`
+				Dot11_advertisedssid_ietagChecksum                int           `json:"dot11.advertisedssid.ietag_checksum"`
+				Dot11_advertisedssid_lastTime                     int           `json:"dot11.advertisedssid.last_time"`
+				Dot11_advertisedssid_location                     struct {
+					Kismet_common_location_avgAlt    int `json:"kismet.common.location.avg_alt"`
+					Kismet_common_location_avgAltNum int `json:"kismet.common.location.avg_alt_num"`
+					Kismet_common_location_avgLat    int `json:"kismet.common.location.avg_lat"`
+					Kismet_common_location_avgLoc    struct {
+						Kismet_common_location_alt      float64 `json:"kismet.common.location.alt"`
+						Kismet_common_location_fix      int     `json:"kismet.common.location.fix"`
+						Kismet_common_location_heading  float64 `json:"kismet.common.location.heading"`
+						Kismet_common_location_lat      float64 `json:"kismet.common.location.lat"`
+						Kismet_common_location_lon      float64 `json:"kismet.common.location.lon"`
+						Kismet_common_location_speed    float64 `json:"kismet.common.location.speed"`
+						Kismet_common_location_timeSec  int     `json:"kismet.common.location.time_sec"`
+						Kismet_common_location_timeUsec int     `json:"kismet.common.location.time_usec"`
+						Kismet_common_location_valid    int     `json:"kismet.common.location.valid"`
+					} `json:"kismet.common.location.avg_loc"`
+					Kismet_common_location_avgLon   int `json:"kismet.common.location.avg_lon"`
+					Kismet_common_location_avgNum   int `json:"kismet.common.location.avg_num"`
+					Kismet_common_location_locFix   int `json:"kismet.common.location.loc_fix"`
+					Kismet_common_location_locValid int `json:"kismet.common.location.loc_valid"`
+					Kismet_common_location_maxLoc   struct {
+						Kismet_common_location_alt      float64 `json:"kismet.common.location.alt"`
+						Kismet_common_location_fix      int     `json:"kismet.common.location.fix"`
+						Kismet_common_location_heading  float64 `json:"kismet.common.location.heading"`
+						Kismet_common_location_lat      float64 `json:"kismet.common.location.lat"`
+						Kismet_common_location_lon      float64 `json:"kismet.common.location.lon"`
+						Kismet_common_location_speed    float64 `json:"kismet.common.location.speed"`
+						Kismet_common_location_timeSec  int     `json:"kismet.common.location.time_sec"`
+						Kismet_common_location_timeUsec int     `json:"kismet.common.location.time_usec"`
+						Kismet_common_location_valid    int     `json:"kismet.common.location.valid"`
+					} `json:"kismet.common.location.max_loc"`
+					Kismet_common_location_minLoc struct {
+						Kismet_common_location_alt      float64 `json:"kismet.common.location.alt"`
+						Kismet_common_location_fix      int     `json:"kismet.common.location.fix"`
+						Kismet_common_location_heading  float64 `json:"kismet.common.location.heading"`
+						Kismet_common_location_lat      float64 `json:"kismet.common.location.lat"`
+						Kismet_common_location_lon      float64 `json:"kismet.common.location.lon"`
+						Kismet_common_location_speed    float64 `json:"kismet.common.location.speed"`
+						Kismet_common_location_timeSec  int     `json:"kismet.common.location.time_sec"`
+						Kismet_common_location_timeUsec int     `json:"kismet.common.location.time_usec"`
+						Kismet_common_location_valid    int     `json:"kismet.common.location.valid"`
+					} `json:"kismet.common.location.min_loc"`
+				} `json:"dot11.advertisedssid.location"`
+				Dot11_advertisedssid_maxrate         float64 `json:"dot11.advertisedssid.maxrate"`
+				Dot11_advertisedssid_probeResponse   int     `json:"dot11.advertisedssid.probe_response"`
+				Dot11_advertisedssid_ssid            string  `json:"dot11.advertisedssid.ssid"`
+				Dot11_advertisedssid_ssidlen         int     `json:"dot11.advertisedssid.ssidlen"`
+				Dot11_advertisedssid_wpsManuf        string  `json:"dot11.advertisedssid.wps_manuf"`
+				Dot11_advertisedssid_wpsModelName    string  `json:"dot11.advertisedssid.wps_model_name"`
+				Dot11_advertisedssid_wpsModelNumber  string  `json:"dot11.advertisedssid.wps_model_number"`
+				Dot11_advertisedssid_wpsSerialNumber string  `json:"dot11.advertisedssid.wps_serial_number"`
+				Dot11_advertisedssid_wpsState        int     `json:"dot11.advertisedssid.wps_state"`
+			} `json:"53936447"`
+		} `json:"dot11.device.advertised_ssid_map"`
+		Dot11_device_associatedClientMap      struct{}      `json:"dot11.device.associated_client_map"`
+		Dot11_device_bssTimestamp             int           `json:"dot11.device.bss_timestamp"`
+		Dot11_device_clientDisconnects        int           `json:"dot11.device.client_disconnects"`
+		Dot11_device_clientMap                struct{}      `json:"dot11.device.client_map"`
+		Dot11_device_datasize                 int           `json:"dot11.device.datasize"`
+		Dot11_device_datasizeRetry            int           `json:"dot11.device.datasize_retry"`
+		Dot11_device_lastBeaconTimestamp      int           `json:"dot11.device.last_beacon_timestamp"`
+		Dot11_device_lastBeaconedSsid         string        `json:"dot11.device.last_beaconed_ssid"`
+		Dot11_device_lastBeaconedSsidChecksum int           `json:"dot11.device.last_beaconed_ssid_checksum"`
+		Dot11_device_lastBssid                string        `json:"dot11.device.last_bssid"`
+		Dot11_device_lastProbedSsidCsum       int           `json:"dot11.device.last_probed_ssid_csum"`
+		Dot11_device_lastSequence             int           `json:"dot11.device.last_sequence"`
+		Dot11_device_numAdvertisedSsids       int           `json:"dot11.device.num_advertised_ssids"`
+		Dot11_device_numAssociatedClients     int           `json:"dot11.device.num_associated_clients"`
+		Dot11_device_numClientAps             int           `json:"dot11.device.num_client_aps"`
+		Dot11_device_numFragments             int           `json:"dot11.device.num_fragments"`
+		Dot11_device_numProbedSsids           int           `json:"dot11.device.num_probed_ssids"`
+		Dot11_device_numRetries               int           `json:"dot11.device.num_retries"`
+		Dot11_device_probedSsidMap            struct{}      `json:"dot11.device.probed_ssid_map"`
+		Dot11_device_typeset                  int           `json:"dot11.device.typeset"`
+		Dot11_device_wpaAnonceList            []interface{} `json:"dot11.device.wpa_anonce_list"`
+		Dot11_device_wpaHandshakeList         []interface{} `json:"dot11.device.wpa_handshake_list"`
+		Dot11_device_wpaNonceList             []interface{} `json:"dot11.device.wpa_nonce_list"`
+		Dot11_device_wpaPresentHandshake      int           `json:"dot11.device.wpa_present_handshake"`
+		Dot11_device_wpsM3Count               int           `json:"dot11.device.wps_m3_count"`
+		Dot11_device_wpsM3Last                int           `json:"dot11.device.wps_m3_last"`
+	} `json:"dot11.device"`
+	Kismet_device_base_basicCryptSet int    `json:"kismet.device.base.basic_crypt_set"`
+	Kismet_device_base_basicTypeSet  int    `json:"kismet.device.base.basic_type_set"`
+	Kismet_device_base_channel       string `json:"kismet.device.base.channel"`
+	Kismet_device_base_commonname    string `json:"kismet.device.base.commonname"`
+	Kismet_device_base_crypt         string `json:"kismet.device.base.crypt"`
+	Kismet_device_base_datasize      int    `json:"kismet.device.base.datasize"`
+	Kismet_device_base_firstTime     int    `json:"kismet.device.base.first_time"`
+	Kismet_device_base_freqKhzMap    struct {
+		Two452000_000000 float64 `json:"2452000.000000"`
+	} `json:"kismet.device.base.freq_khz_map"`
+	Kismet_device_base_frequency float64 `json:"kismet.device.base.frequency"`
+	Kismet_device_base_key       string  `json:"kismet.device.base.key"`
+	Kismet_device_base_lastTime  int     `json:"kismet.device.base.last_time"`
+	Kismet_device_base_location  struct {
+		Kismet_common_location_avgAlt    int `json:"kismet.common.location.avg_alt"`
+		Kismet_common_location_avgAltNum int `json:"kismet.common.location.avg_alt_num"`
+		Kismet_common_location_avgLat    int `json:"kismet.common.location.avg_lat"`
+		Kismet_common_location_avgLoc    struct {
+			Kismet_common_location_alt      float64 `json:"kismet.common.location.alt"`
+			Kismet_common_location_fix      int     `json:"kismet.common.location.fix"`
+			Kismet_common_location_heading  float64 `json:"kismet.common.location.heading"`
+			Kismet_common_location_lat      float64 `json:"kismet.common.location.lat"`
+			Kismet_common_location_lon      float64 `json:"kismet.common.location.lon"`
+			Kismet_common_location_speed    float64 `json:"kismet.common.location.speed"`
+			Kismet_common_location_timeSec  int     `json:"kismet.common.location.time_sec"`
+			Kismet_common_location_timeUsec int     `json:"kismet.common.location.time_usec"`
+			Kismet_common_location_valid    int     `json:"kismet.common.location.valid"`
+		} `json:"kismet.common.location.avg_loc"`
+		Kismet_common_location_avgLon   int `json:"kismet.common.location.avg_lon"`
+		Kismet_common_location_avgNum   int `json:"kismet.common.location.avg_num"`
+		Kismet_common_location_locFix   int `json:"kismet.common.location.loc_fix"`
+		Kismet_common_location_locValid int `json:"kismet.common.location.loc_valid"`
+		Kismet_common_location_maxLoc   struct {
+			Kismet_common_location_alt      float64 `json:"kismet.common.location.alt"`
+			Kismet_common_location_fix      int     `json:"kismet.common.location.fix"`
+			Kismet_common_location_heading  float64 `json:"kismet.common.location.heading"`
+			Kismet_common_location_lat      float64 `json:"kismet.common.location.lat"`
+			Kismet_common_location_lon      float64 `json:"kismet.common.location.lon"`
+			Kismet_common_location_speed    float64 `json:"kismet.common.location.speed"`
+			Kismet_common_location_timeSec  int     `json:"kismet.common.location.time_sec"`
+			Kismet_common_location_timeUsec int     `json:"kismet.common.location.time_usec"`
+			Kismet_common_location_valid    int     `json:"kismet.common.location.valid"`
+		} `json:"kismet.common.location.max_loc"`
+		Kismet_common_location_minLoc struct {
+			Kismet_common_location_alt      float64 `json:"kismet.common.location.alt"`
+			Kismet_common_location_fix      int     `json:"kismet.common.location.fix"`
+			Kismet_common_location_heading  float64 `json:"kismet.common.location.heading"`
+			Kismet_common_location_lat      float64 `json:"kismet.common.location.lat"`
+			Kismet_common_location_lon      float64 `json:"kismet.common.location.lon"`
+			Kismet_common_location_speed    float64 `json:"kismet.common.location.speed"`
+			Kismet_common_location_timeSec  int     `json:"kismet.common.location.time_sec"`
+			Kismet_common_location_timeUsec int     `json:"kismet.common.location.time_usec"`
+			Kismet_common_location_valid    int     `json:"kismet.common.location.valid"`
+		} `json:"kismet.common.location.min_loc"`
+	} `json:"kismet.device.base.location"`
+	Kismet_device_base_locationCloud struct {
+		Kis_gps_rrd_lastSampleTs int `json:"kis.gps.rrd.last_sample_ts"`
+		Kis_gps_rrd_samples100   []struct {
+			Kismet_historic_location_alt       float64 `json:"kismet.historic.location.alt"`
+			Kismet_historic_location_frequency int     `json:"kismet.historic.location.frequency"`
+			Kismet_historic_location_heading   float64 `json:"kismet.historic.location.heading"`
+			Kismet_historic_location_lat       float64 `json:"kismet.historic.location.lat"`
+			Kismet_historic_location_lon       float64 `json:"kismet.historic.location.lon"`
+			Kismet_historic_location_signal    int     `json:"kismet.historic.location.signal"`
+			Kismet_historic_location_speed     float64 `json:"kismet.historic.location.speed"`
+			Kismet_historic_location_timeSec   int     `json:"kismet.historic.location.time_sec"`
+		} `json:"kis.gps.rrd.samples_100"`
+		Kis_gps_rrd_samples10k []interface{} `json:"kis.gps.rrd.samples_10k"`
+		Kis_gps_rrd_samples1m  []interface{} `json:"kis.gps.rrd.samples_1m"`
+	} `json:"kismet.device.base.location_cloud"`
+	Kismet_device_base_macaddr          string `json:"kismet.device.base.macaddr"`
+	Kismet_device_base_manuf            string `json:"kismet.device.base.manuf"`
+	Kismet_device_base_modTime          int    `json:"kismet.device.base.mod_time"`
+	Kismet_device_base_name             string `json:"kismet.device.base.name"`
+	Kismet_device_base_numAlerts        int    `json:"kismet.device.base.num_alerts"`
+	Kismet_device_base_packets_crypt    int    `json:"kismet.device.base.packets.crypt"`
+	Kismet_device_base_packets_data     int    `json:"kismet.device.base.packets.data"`
+	Kismet_device_base_packets_error    int    `json:"kismet.device.base.packets.error"`
+	Kismet_device_base_packets_filtered int    `json:"kismet.device.base.packets.filtered"`
+	Kismet_device_base_packets_llc      int    `json:"kismet.device.base.packets.llc"`
+	Kismet_device_base_packets_rrd      struct {
+		Kismet_common_rrd_aggregator string    `json:"kismet.common.rrd.aggregator"`
+		Kismet_common_rrd_blankVal   int       `json:"kismet.common.rrd.blank_val"`
+		Kismet_common_rrd_dayVec     []int     `json:"kismet.common.rrd.day_vec"`
+		Kismet_common_rrd_hourVec    []int     `json:"kismet.common.rrd.hour_vec"`
+		Kismet_common_rrd_lastTime   int       `json:"kismet.common.rrd.last_time"`
+		Kismet_common_rrd_minuteVec  []float64 `json:"kismet.common.rrd.minute_vec"`
+	} `json:"kismet.device.base.packets.rrd"`
+	Kismet_device_base_packets_rx    int    `json:"kismet.device.base.packets.rx"`
+	Kismet_device_base_packets_total int    `json:"kismet.device.base.packets.total"`
+	Kismet_device_base_packets_tx    int    `json:"kismet.device.base.packets.tx"`
+	Kismet_device_base_phyname       string `json:"kismet.device.base.phyname"`
+	Kismet_device_base_seenby        struct {
+		_1975842976 struct {
+			Kismet_common_seenby_firstTime  int `json:"kismet.common.seenby.first_time"`
+			Kismet_common_seenby_freqKhzMap struct {
+				Two452000_000000 float64 `json:"2452000.000000"`
+			} `json:"kismet.common.seenby.freq_khz_map"`
+			Kismet_common_seenby_lastTime   int `json:"kismet.common.seenby.last_time"`
+			Kismet_common_seenby_numPackets int `json:"kismet.common.seenby.num_packets"`
+			Kismet_common_seenby_signal     struct {
+				Kismet_common_signal_carrierset  int     `json:"kismet.common.signal.carrierset"`
+				Kismet_common_signal_encodingset int     `json:"kismet.common.signal.encodingset"`
+				Kismet_common_signal_lastNoise   int     `json:"kismet.common.signal.last_noise"`
+				Kismet_common_signal_lastSignal  int     `json:"kismet.common.signal.last_signal"`
+				Kismet_common_signal_maxNoise    int     `json:"kismet.common.signal.max_noise"`
+				Kismet_common_signal_maxSignal   int     `json:"kismet.common.signal.max_signal"`
+				Kismet_common_signal_maxseenrate float64 `json:"kismet.common.signal.maxseenrate"`
+				Kismet_common_signal_minNoise    int     `json:"kismet.common.signal.min_noise"`
+				Kismet_common_signal_minSignal   int     `json:"kismet.common.signal.min_signal"`
+				Kismet_common_signal_signalRrd   struct {
+					Kismet_common_rrd_aggregator string    `json:"kismet.common.rrd.aggregator"`
+					Kismet_common_rrd_blankVal   int       `json:"kismet.common.rrd.blank_val"`
+					Kismet_common_rrd_lastTime   int       `json:"kismet.common.rrd.last_time"`
+					Kismet_common_rrd_minuteVec  []float64 `json:"kismet.common.rrd.minute_vec"`
+				} `json:"kismet.common.signal.signal_rrd"`
+				Kismet_common_signal_type string `json:"kismet.common.signal.type"`
+			} `json:"kismet.common.seenby.signal"`
+			Kismet_common_seenby_uuid string `json:"kismet.common.seenby.uuid"`
+		} `json:"-1975842976"`
+	} `json:"kismet.device.base.seenby"`
+	Kismet_device_base_serverUUID string `json:"kismet.device.base.server_uuid"`
+	Kismet_device_base_signal     struct {
+		Kismet_common_signal_carrierset  int     `json:"kismet.common.signal.carrierset"`
+		Kismet_common_signal_encodingset int     `json:"kismet.common.signal.encodingset"`
+		Kismet_common_signal_lastNoise   int     `json:"kismet.common.signal.last_noise"`
+		Kismet_common_signal_lastSignal  int     `json:"kismet.common.signal.last_signal"`
+		Kismet_common_signal_maxNoise    int     `json:"kismet.common.signal.max_noise"`
+		Kismet_common_signal_maxSignal   int     `json:"kismet.common.signal.max_signal"`
+		Kismet_common_signal_maxseenrate float64 `json:"kismet.common.signal.maxseenrate"`
+		Kismet_common_signal_minNoise    int     `json:"kismet.common.signal.min_noise"`
+		Kismet_common_signal_minSignal   int     `json:"kismet.common.signal.min_signal"`
+		Kismet_common_signal_signalRrd   struct {
+			Kismet_common_rrd_aggregator string    `json:"kismet.common.rrd.aggregator"`
+			Kismet_common_rrd_blankVal   int       `json:"kismet.common.rrd.blank_val"`
+			Kismet_common_rrd_lastTime   int       `json:"kismet.common.rrd.last_time"`
+			Kismet_common_rrd_minuteVec  []float64 `json:"kismet.common.rrd.minute_vec"`
+		} `json:"kismet.common.signal.signal_rrd"`
+		Kismet_common_signal_type string `json:"kismet.common.signal.type"`
+	} `json:"kismet.device.base.signal"`
+	Kismet_device_base_tags struct{} `json:"kismet.device.base.tags"`
+	Kismet_device_base_type string   `json:"kismet.device.base.type"`
+}
+
 /////////////
 //Functions//
 ////////////
@@ -187,11 +436,16 @@ func checkError(err error) {
 }
 
 //populateTemplate populates the html template
-func populateTemplate(points Points) []byte {
+func populateTemplate(points Points, apikey *string) []byte {
 	var page Page
 	var convexData string
 	var heatmap string
 	var driveData string
+	if apikey != nil {
+		page.Apikey = apikey
+	} else {
+		page.Apikey = nil
+	}
 	var tplBuffer bytes.Buffer
 	convexPoints := findConvexHull(points)
 	for _, point := range convexPoints {
@@ -222,6 +476,8 @@ func main() {
 	var bssid = flag.String("b", "", "File or comma seperated list of bssids")
 	var outFile = flag.String("o", "", "Html Output file")
 	var aerodump = flag.Bool("a", false, "Switch to specify aerodump gps file")
+	var kismet = flag.Bool("k", false, "Switch to specify kismet database")
+	var googleapi = flag.String("api", "", "Google Maps API key")
 	flag.Parse()
 	if !flag.Parsed() || !(flag.NFlag() >= 3) {
 		fmt.Println("Usage: warmap -f <Kismet gpsxml file> -b <File or List of BSSIDs> -o <HTML output file>")
@@ -230,10 +486,13 @@ func main() {
 	var gpsPoints Points
 	if *aerodump {
 		gpsPoints = parseAeroGPS(*gpsFile)
+	} else if *kismet {
+		bssids := parseBssid(*bssid)
+		gpsPoints = parseKismet(*gpsFile, bssids)
 	} else {
 		bssids := parseBssid(*bssid)
 		gpsPoints = parseXML(*gpsFile, bssids)
 	}
-	templateBuffer := populateTemplate(gpsPoints)
+	templateBuffer := populateTemplate(gpsPoints, googleapi)
 	ioutil.WriteFile(*outFile, templateBuffer, 0644)
 }

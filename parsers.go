@@ -2,13 +2,43 @@ package main
 
 import (
 	"bufio"
+	"database/sql"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
 	"strings"
+
+	_ "github.com/mattn/go-sqlite3"
 )
+
+//parseKismet parses the specified Kismet file and returns a Points array with all the values
+func parseKismet(file string, bssids []string) (points Points) {
+	db, err := sql.Open("sqlite3", file)
+	if err != nil {
+		panic("Ensure the Kismit file exists")
+	}
+
+	rows, err := db.Query("SELECT device FROM devices")
+	if err != nil {
+		panic("Kismet database corrupt")
+	}
+	defer rows.Close()
+	var device string
+	for rows.Next() {
+		err = rows.Scan(&device)
+		var data KismetDatabase
+		if err := json.Unmarshal([]byte(device), &data); err != nil {
+			fmt.Println(err)
+		}
+		//fmt.Println(data.Kismet_device_base_location.Kismet_common_location_avgLat)
+		points = append(points, Point{data.Kismet_device_base_location.Kismet_common_location_avgLoc.Kismet_common_location_lon, data.Kismet_device_base_location.Kismet_common_location_avgLoc.Kismet_common_location_lat, data.Kismet_device_base_signal.Kismet_common_signal_minSignal, data.Kismet_device_base_macaddr})
+	}
+	points = filterBSSID(points, bssids)
+	return
+}
 
 //parseXML parses the specified XML file and returns a Points array with all the values
 func parseXML(file string, bssids []string) (points Points) {
