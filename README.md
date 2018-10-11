@@ -6,4 +6,6 @@ Warmap takes a Kismet gpsxml, Aerodump gps file or Kismet Database file and a se
 
 go run warmap -f [Kismet gpsxml or Aerodump gps file or Kismet Database file] -a [boolean switch if youre using Aerodump output] -a [boolean switch if youre using Kismet Database] -b [File of Comma-seperated List of BSSIDs] -o [HTML output file] -api [Google Maps API Key]
 
+Go here to get a Google Maps API key https://developers.google.com/maps/documentation/javascript/get-api-key
+
 Binaries for all platforms can be found <a href="https://github.com/rmikehodges/warmap-go/releases">here</a>
