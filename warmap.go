@@ -50,7 +50,7 @@ const tpl = `
       </div>
     </div>
   </body>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{.Apikey}}&libraries=visualization">  
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{.Apikey}}&libraries=visualization">
   </script>
 <script>
 var heatMapData = {{.Heatmap}};
@@ -470,6 +470,26 @@ func populateTemplate(points Points, apikey *string) []byte {
 	return tplBuffer.Bytes()
 }
 
+func printPoints(file string, points *Points) {
+	list := make(map[string]int)
+	var data bytes.Buffer
+	if file == "" {
+		return
+	}
+
+	for _, p := range *points {
+		if _, ok := list[p.BSSID]; !ok {
+			list[p.BSSID] = p.Dbm
+		} else if db, ok := list[p.BSSID]; ok && db < p.Dbm {
+			list[p.BSSID] = p.Dbm
+		}
+	}
+	for k, v := range list {
+		data.WriteString(fmt.Sprintf("%s,%v\n", k, v))
+	}
+	ioutil.WriteFile(file, data.Bytes(), 0644)
+}
+
 func main() {
 	//Parse command line arguments
 	var gpsFile = flag.String("f", "", "GPS input file")
@@ -478,6 +498,7 @@ func main() {
 	var aerodump = flag.Bool("a", false, "Switch to specify aerodump gps file")
 	var kismet = flag.Bool("k", false, "Switch to specify kismet database")
 	var googleapi = flag.String("api", "", "Google Maps API key")
+	var points = flag.String("p", "", "CSV Output file for reported BSSID values")
 	flag.Parse()
 	if !flag.Parsed() || !(flag.NFlag() >= 3) {
 		fmt.Println("Usage: warmap -f <Kismet gpsxml file> -b <File or List of BSSIDs> -o <HTML output file>")
@@ -493,6 +514,7 @@ func main() {
 		bssids := parseBssid(*bssid)
 		gpsPoints = parseXML(*gpsFile, bssids)
 	}
+	printPoints(*points, &gpsPoints)
 	templateBuffer := populateTemplate(gpsPoints, googleapi)
 	ioutil.WriteFile(*outFile, templateBuffer, 0644)
 }
