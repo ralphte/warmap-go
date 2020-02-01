@@ -25,7 +25,7 @@ const tpl = `
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
     <script type="text/javascript" src="http://hpneo.github.io/gmaps/gmaps.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="all.css" rel="stylesheet">
+    <link href="https://mattburch.github.io/warmap-go/src/all.css" rel="stylesheet">
     <style>
       #map {
         display: block;
@@ -80,7 +80,7 @@ const tpl = `
     </div>
   </body>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{.Apikey}}&libraries=visualization"></script>
-  <script type="text/javascript" src="labels.js"></script>
+  <script type="text/javascript" src="https://mattburch.github.io/warmap-go/src/labels.js"></script>
 <script>
 var heatMapData = {{.Heatmap}};
 var overlayCoords = {{.ConvexHull}};
