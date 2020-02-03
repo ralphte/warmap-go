@@ -15,7 +15,7 @@ import (
 )
 
 //parseKismet parses the specified Kismet file and returns a Points array with all the values
-func parseKismet(file string, bssids []string) (points Points) {
+func parseKismet(file string, bssids []string, filter map[string]interface{}) (points Points) {
 	db, err := sql.Open("sqlite3", file)
 	if err != nil {
 		panic("Ensure the Kismit file exists")
@@ -36,12 +36,12 @@ func parseKismet(file string, bssids []string) (points Points) {
 		//fmt.Println(data.Kismet_device_base_location.Kismet_common_location_avgLat)
 		points = append(points, Point{data.Kismet_device_base_location.Kismet_common_location_avgLoc.Kismet_common_location_lon, data.Kismet_device_base_location.Kismet_common_location_avgLoc.Kismet_common_location_lat, data.Kismet_device_base_signal.Kismet_common_signal_minSignal, data.Kismet_device_base_macaddr})
 	}
-	points = filterBSSID(points, bssids)
+	points = filterBSSID(points, bssids, filter)
 	return
 }
 
 //parseXML parses the specified XML file and returns a Points array with all the values
-func parseXML(file string, bssids []string) (points Points) {
+func parseXML(file string, bssids []string, filter map[string]interface{}) (points Points) {
 	xmlFile, err := os.Open(file)
 	if err != nil {
 		panic("Ensure the GPSXML file exists")
@@ -56,7 +56,7 @@ func parseXML(file string, bssids []string) (points Points) {
 			points = append(points, Point{gpsxml.Lon, gpsxml.Lat, gpsxml.SignalDbm, gpsxml.Bssid})
 		}
 	}
-	points = filterBSSID(points, bssids)
+	points = filterBSSID(points, bssids, filter)
 	return
 
 }
@@ -81,11 +81,17 @@ func parseAeroGPS(file string) (points Points) {
 }
 
 //filterBSSID returns all GPSXMLPoint structs that have a particular bssid field
-func filterBSSID(points Points, bssid []string) (filteredPoints Points) {
+func filterBSSID(points Points, bssid []string, filter map[string]interface{}) (filteredPoints Points) {
 	for _, i := range points {
 		for _, n := range bssid {
 			if i.BSSID == n {
-				filteredPoints = append(filteredPoints, i)
+				if filter["filter"].(bool) {
+					if (i.Dbm * -1) < filter["max"].(int) {
+						filteredPoints = append(filteredPoints, i)
+					}
+				} else {
+					filteredPoints = append(filteredPoints, i)
+				}
 			}
 		}
 	}
