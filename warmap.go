@@ -542,6 +542,20 @@ func checkError(err error) {
 	}
 }
 
+//sigCheck checks if signal has changed and modifies the base
+func sigCheck(baseH *int, baseL *int, c int) {
+	if *baseH == 0 || *baseL == 0 {
+		*baseH = c
+		*baseL = c
+	}
+	if c > *baseH {
+		*baseH = c
+	}
+	if c < *baseL {
+		*baseL = c
+	}
+}
+
 //populateTemplate populates the html template
 func populateTemplate(points Points, apikey *string) []byte {
 	var page Page
@@ -561,23 +575,14 @@ func populateTemplate(points Points, apikey *string) []byte {
 	}
 	for _, point := range points {
 		heatmap += fmt.Sprintf("{location: new google.maps.LatLng(%g, %g), weight: %f}, ", point.Y, point.X, (float64(point.Dbm)/10.0)+9.0)
-		if high == 0 || low == 0 {
-			high = point.Dbm
-			low = point.Dbm
-		}
-		if point.Dbm > high {
-			high = point.Dbm
-		}
-		if point.Dbm < low {
-			low = point.Dbm
-		}
+		sigCheck(&high, &low, point.Dbm)
 	}
 	for _, point := range points {
 		driveData += fmt.Sprintf("(new google.maps.LatLng(%g, %g)), ", point.Y, point.X)
 	}
 	page.Lat = points[0].Y
 	page.Lng = points[0].X
-	page.PathLength = len(driveData)
+	page.PathLength = len(points)
 	page.ConvexHull = template.JS("[" + convexData[:len(convexData)-2] + "]")
 	page.Heatmap = template.JS("[" + heatmap[:len(heatmap)-2] + "]")
 	page.Drive = template.JS("[" + driveData[:len(driveData)-2] + "]")
@@ -619,21 +624,30 @@ func main() {
 	var kismet = flag.Bool("k", false, "Switch to specify kismet database")
 	var googleapi = flag.String("api", "", "Google Maps API key")
 	var points = flag.String("p", "", "CSV Output file for reported BSSID values")
+	var sigfilter = flag.Bool("filter", false, "Enable max signal filtering")
+	var maxsignal = flag.Int("sig", 0, "Maximum signal DB to allow in warmap")
+
 	flag.Parse()
 	if !flag.Parsed() || !(flag.NFlag() >= 3) {
 		fmt.Println("Usage: warmap -f <Kismet gpsxml file> -b <File or List of BSSIDs> -o <HTML output file>")
 		os.Exit(1)
 	}
+
+	filter := make(map[string]interface{})
+	filter["filter"] = *sigfilter
+	filter["max"] = *maxsignal
+
 	var gpsPoints Points
 	if *aerodump {
 		gpsPoints = parseAeroGPS(*gpsFile)
 	} else if *kismet {
 		bssids := parseBssid(*bssid)
-		gpsPoints = parseKismet(*gpsFile, bssids)
+		gpsPoints = parseKismet(*gpsFile, bssids, filter)
 	} else {
 		bssids := parseBssid(*bssid)
-		gpsPoints = parseXML(*gpsFile, bssids)
+		gpsPoints = parseXML(*gpsFile, bssids, filter)
 	}
+
 	printPoints(*points, &gpsPoints)
 	templateBuffer := populateTemplate(gpsPoints, googleapi)
 	ioutil.WriteFile(*outFile, templateBuffer, 0644)
